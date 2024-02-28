@@ -1,11 +1,14 @@
 # Quick Start
-
+1. Установите Python 3.10 и выше. Обязательно проверьте PATH!
+2. Откройте cmd и напишите `pip install py-cord`
+3. Заполните `config.py`
 
 
 # Заполнение config.py
 
 ## Получите TOKEN
 [Не мой гайд](https://www.writebots.com/discord-bot-token/)
+
 
 ## Получение данных для авторизации
 Войдите в свой Яндекс аккаунт, затем проделайте следующие шаги:
@@ -29,4 +32,4 @@
     - Куки `Session_id` - это переменная `session-id` в `token.py`
 
 
-# 
+
