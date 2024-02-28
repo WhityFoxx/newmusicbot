@@ -445,8 +445,8 @@ class QueueDelSearch(discord.ui.Modal):
     async def callback(self, interaction: discord.Interaction):
         global queue
         try:
-            deleted = queue[interaction.guild.id].pop(int(self.children[0].value) - 1)[0]
-            emb = Embed(description=f"Композиция [{deleted.title}]({deleted.uri}) под номером **{self.children[0].value}** удалена из очереди", color=0xe74c3c)
+            deleted = queue[interaction.guild.id].pop(int(self.children[0].value) - 1)
+            emb = Embed(description=f"Композиция [{' & '.join([x.name for x in deleted['data'].artists]) + ' - ' + deleted['data'].title}]({deleted['url']}) под номером **{self.children[0].value}** удалена из очереди", color=0xe74c3c)
             await interaction.response.send_message(embed=emb)
         except Exception as e:
             print(e)
@@ -535,18 +535,20 @@ class Change_Track(discord.ui.Modal):
                 track = {"album_id": url.split("track/")[-1], "id":  url.split('album/')[-1].split('/track')[0]}
                 session = await api.setup_session(session=client, session_id=session_id, user_agent=DEFAULT_USER_AGENT)
                 data = await api.get_full_track_info(session, track_id=track['album_id']) 
+                queue[interaction.guild.id].insert(position - 1 , {'url': url ,'data' :data, 'stream': await api.get_track_download_url(session=session, track=track, hq=True), 'author': interaction.user})
         else:
             track = {"album_id": requests.split("track/")[-1], "id":  requests.split('album/')[-1].split('/track')[0]}
             async with httpx.AsyncClient() as client:
                 session = await api.setup_session(session=client, session_id=session_id, user_agent=DEFAULT_USER_AGENT)
                 data = await api.get_full_track_info(session, track_id=track['album_id']) 
                 url = requests
-
+                queue[interaction.guild.id].insert(position - 1, {'url': requests, 'data' :data, 'stream': await api.get_track_download_url(session=session, track=track, hq=True), 'author': interaction.user})
+                
         link = url
         thumb = data.cover_info.cover_url_template[:-2:] + 'm400x400'
-        title = track.title
+        title = ' & '.join([x.name for x in data.artists]) + " - " + data.title
         duration = (datetime.timedelta(seconds=data.duration // 1000))
-        queue[interaction.guild_id].insert(position - 1, (track, interaction.user))
+        
         emb = Embed(title="Выбранная композиция из очереди", url=link, description=title, color=0x2ecc71)
         emb.add_field(name="Длительность", value=duration, inline=False)
         emb.add_field(name="Позиция в очереди", value=position, inline=False)
@@ -599,14 +601,16 @@ class QueueInsert(discord.ui.Modal):
                     track = {"album_id": url.split("track/")[-1], "id":  url.split('album/')[-1].split('/track')[0]}
                     session = await api.setup_session(session=client, session_id=session_id, user_agent=DEFAULT_USER_AGENT)
                     data = await api.get_full_track_info(session, track_id=track['album_id']) 
+                    queue[interaction.guild.id].insert(int(index) - 1, {'url': url ,'data' :data, 'stream': await api.get_track_download_url(session=session, track=track, hq=True), 'author': interaction.user})
             else:
                 track = {"album_id": requests.split("track/")[-1], "id":  requests.split('album/')[-1].split('/track')[0]}
                 async with httpx.AsyncClient() as client:
                     session = await api.setup_session(session=client, session_id=session_id, user_agent=DEFAULT_USER_AGENT)
                     data = await api.get_full_track_info(session, track_id=track['album_id']) 
                     url = requests
-            queue[interaction.guild.id].insert(int(index) - 1, {'url': url,'data' :data, 'stream': await api.get_track_download_url(session=session, track=track, hq=True), 'author': interaction.author})
-            emb = Embed(description=f'**[{data.title}]({url}) была поставлена в очередь под номером {index}**', color=0x0c0c0c)
+                    queue[interaction.guild.id].insert(int(index) - 1, {'url': requests, 'data' :data, 'stream': await api.get_track_download_url(session=session, track=track, hq=True), 'author': interaction.user})
+                    
+            emb = Embed(description=f"**[{' & '.join([x.name for x in data.artists]) + ' - ' + data.title}]({url}) была поставлена в очередь под номером {index}**", color=0x0c0c0c)
 
             await interaction.response.send_message(embed=emb)
         except Exception as e:
