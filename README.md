@@ -1,5 +1,15 @@
+# Quick Start
+
+
+
+# Заполнение config.py
+
+## Получите TOKEN
+[Не мой гайд](https://www.writebots.com/discord-bot-token/)
+
 ## Получение данных для авторизации
 Войдите в свой Яндекс аккаунт, затем проделайте следующие шаги:
+
 
 ### Для Google Chrome/Chromium
 1. Перейдите на сайт Яндекс Музыки (https://music.yandex.ru) 
@@ -19,3 +29,4 @@
     - Куки `Session_id` - это переменная `session-id` в `token.py`
 
 
+# 
