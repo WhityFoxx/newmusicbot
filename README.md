@@ -1,6 +1,6 @@
 # Quick Start
 1. Установите Python 3.10 и выше. Обязательно проверьте PATH!
-2. Откройте cmd и напишите `pip install py-cord`
+2. Откройте cmd и напишите `pip install py-cord[voice]`
 3. Заполните `config.py`
 
 
